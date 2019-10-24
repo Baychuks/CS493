@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+
+<!--
+*******************************************************************************
+*  Document: Five Card Draw POKER GAME.                                       *                                                                               
+*    Author: Daniel Tengelics.                                                * 
+*    Script: JavaScript.                                                      *                                                                               
+*      Date: 01/28/2013.                                                      *
+*   Version: V1.0.                                                            *
+*  Comments: New document to simulate 5 card draw poker game as per           *
+*            the game rules below.                                            *
+*                                                                             *
+*  GAME RULES:                                                                *
+*  1. Standard five card draw game, no wild cards.                            *
+*  2. No Minimum bet, Maximum bet $25.                                        *
+*  3. Ace high or low.                                                        *
+*  4. Dealer is Computer, Player is User.                                     *                                                                               
+*  5. Final hand tie break is card suit in descending order of;                *
+*     Spades, Hearts, Diamonds, Clubs.                                        *
+*  6. Stack start for player and dealer is $2000.                             *                                                                               
+*                                                                             *
+*  CHANGE LOG:                                                                *
+*  00. New document to perform function as described in comments above.       *
+*******************************************************************************
+-->
+
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=5">
+<style>
+.Handstat    {position:fixed; top:30px;  left:600px;}
+.Betstat     {position:fixed; top:300px; left:600px;}
+.Actionmsg   {position:fixed; bottom:1px}
+.Betdrop     {position:fixed; top:530px; left:10px;}
+.P1          {position:fixed; top:475px; left:400px;}
+.Ctr         {text-align:center; background-color:white;}
+.Fnt         {font-weight:bold; font-family:Verdana; background-color:white;}
+body         {background-color:Moccasin;}
+</style>
+</head>
+
+<body>
+
+<h1> Five Card Draw Poker Card Game </h1>
+
+<h3> Dealers Hand </h3>
+<table cellspacing="20">
+<tr>
+  <td id = "Tbdcard1"> </td>
+  <td id = "Tbdcard2"> </td>
+  <td id = "Tbdcard3"> </td>
+  <td id = "Tbdcard4"> </td>
+  <td id = "Tbdcard5"> </td>
+</tr>
+</table>
+
+<h3> Players Hand </h3>
+<table cellspacing="20">
+<tr>
+  <td id = "Tbpcard1" Onclick = "Tbpclick(1)"> </td>
+  <td id = "Tbpcard2" Onclick = "Tbpclick(2)"> </td>
+  <td id = "Tbpcard3" Onclick = "Tbpclick(3)"> </td>
+  <td id = "Tbpcard4" Onclick = "Tbpclick(4)"> </td>
+  <td id = "Tbpcard5" Onclick = "Tbpclick(5)"> </td>
+  </tr>
+</table>
+
+<h3 id="Act" class="Actionmsg"></h3>
+<p id="Butt"></p>
+
+<table class="Handstat" border="1">
+<tr> <td>    DEALER                </td> <td>    PLAYER                </td> <td> POSSIBLE HANDS   </td> <td>    WINNER   </td> </tr>
+<tr> <td id="Dealhas0" class="Ctr"></td> <td id="Playhas0" class="Ctr"></td> <td> High Card        </td> <td id="Whowon0" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas1" class="Ctr"></td> <td id="Playhas1" class="Ctr"></td> <td> One Pair         </td> <td id="Whowon1" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas2" class="Ctr"></td> <td id="Playhas2" class="Ctr"></td> <td> Two Pair         </td> <td id="Whowon2" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas3" class="Ctr"></td> <td id="Playhas3" class="Ctr"></td> <td> Three Of A Kind  </td> <td id="Whowon3" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas4" class="Ctr"></td> <td id="Playhas4" class="Ctr"></td> <td> Straight         </td> <td id="Whowon4" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas5" class="Ctr"></td> <td id="Playhas5" class="Ctr"></td> <td> Flush            </td> <td id="Whowon5" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas6" class="Ctr"></td> <td id="Playhas6" class="Ctr"></td> <td> Full House       </td> <td id="Whowon6" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas7" class="Ctr"></td> <td id="Playhas7" class="Ctr"></td> <td> Four Of A Kind   </td> <td id="Whowon7" class="Ctr"></td> </tr>
+<tr> <td id="Dealhas8" class="Ctr"></td> <td id="Playhas8" class="Ctr"></td> <td> Straight Flush   </td> <td id="Whowon8" class="Ctr"></td> </tr>
+</table>
+
+<form name="Betform" class="Betdrop">
+<select id="Betchoice">
+<option>$0
+<option>$5
+<option>$10
+<option>$15
+<option>$20
+<option>$25
+</select>
+  Select Bet Amount
+</form>
+ 
+<table border="1" class="Betstat">
+<tr><td> Current:      <td/><td>    $ Amount                                       </td></tr>
+<tr><td> Bet           <td/><td id="Betdisp"  class="Fnt"><font size="5">0   </font></td></tr>
+<tr><td> Pot           <td/><td id="Potdisp"  class="Fnt"><font size="5">0   </font></td></tr>
+<tr><td> Players Stack <td/><td id="Pstkdisp" class="Fnt"><font size="5">2000</font></td></tr>
+<tr><td> Dealers Stack <td/><td id="Dstkdisp" class="Fnt"><font size="5">2000</font></td></tr>
+</table>
+
+<h4 id="P1" class="P1"></h34
+
+<!--
+//***
+//*** Start Of Five Card Draw Poker Game Script 
+//***
+-->
+
+<script type="text/javaScript">
+ 
+//***
+//*** Start Of Multiple Dimension Array Variable Definition
+//***
+
+//* The Card Deck Table is 3 dimensions, i.e. cardtabl(4,13,3) - storing 52 cards
+//* dim; 1 = Rank, 2 = Suit, 3 = Used (value of '*' means the card has been dealt)
+
+var i  = 0; 
+var i1 = 0;
+var i2 = 0;
+
+var cardtabl = new Array(4);
+
+for (i=1;i<5;i++)
+    { 
+    cardtabl[i] = new Array(13);
+    }
+
+for (i1=1;i1<5;i1++)
+    {
+    for (i2=1;i2<14;i2++)
+        { 
+        cardtabl[i1][i2] = new Array(3);
+        }
+    }
+
+for (i1=1;i1<5;i1++)
+    {
+    for (i2=1;i2<14;i2++)
+        { 
+        cardtabl[i1][i2][1] = 0;
+        cardtabl[i1][i2][2] = "";
+        cardtabl[i1][i2][3] = "";
+        }
+    }
+
+//* The dealer and player card tables are used to store the cards dealt to
+//* the dealer and player; 5 cards, with each cards rank and suit
+
+var dealcar2 = new Array(5);
+
+for (i=1;i<6;i++)
+    { 
+    dealcar2[i] = new Array(2);
+    }
+
+for (i=1;i<6;i++)
+    {
+    dealcar2[i][1] = 0;
+    dealcar2[i][2] = "";
+    }
+
+var playcar2 = new Array(5);
+
+for (i=1;i<6;i++)
+    { 
+    playcar2[i] = new Array(2);
+    }
+
+for (i=1;i<6;i++)
+    {
+    playcar2[i][1] = 0;
+    playcar2[i][2] = "";
+    }
+
+//* The hand table stores the low and high range values for the 8 possible hands 
+//* (The lowest hand, high card, defaults to 0, and therefore is not
+//* included in the table)   
+
+var handtabl = new Array(8);
+
+for (i=1;i<9;i++)
+    { 
+    handtabl[i] = new Array(2);
+    }
+
+for (i=1;i<9;i++)
+    {
+    handtabl[i][1] = 0;
+    handtabl[i][2] = 0;
+    }
+
+
+//* The hand card table is used to store the cards dealt to
+//* the dealer or player for passing to stand alone sub routines; 
+//* 5 cards, with each cards suit and rank 
+
+var handcrds = new Array(5);
+
+for (i=1;i<6;i++)
+    { 
+    handcrds[i] = new Array(2);
+    }
+
+for (i=1;i<6;i++)
+    {
+    handcrds[i][1] = 0;
+    handcrds[i][2] = "";
+    }
+
+//***
+//*** End Of Multiple Dimension Array Variable Definition
+//***
+
+//***
+//*** Start Of Single Dimension Array Variable Definition
+//***
+
+var dealcard = new Array(5);
+var playcard = new Array(5);
+var drawcard = new Array(5);
+var carddel2 = new Array(2);
+var betamt   = new Array(5);
+var cardtemp = new Array(5);
+var cardsui2 = new Array(5);
+var cardused = new Array(5);
+var playused = new Array(5);
+var dealused = new Array(5);
+
+
+carddel2[1] = 0;
+carddel2[2] = "";
+
+betamt[0] = 0;
+betamt[1] = 5; 
+betamt[2] = 10;
+betamt[3] = 15;
+betamt[4] = 20;
+betamt[5] = 25;
+
+//***
+//*** End Of Single Dimension Array Variable Definition
+//***
+
+//***
+//*** Start Of General Use Scalar Variable Definition
+//***
+var cardback  = 'CB1.png">';
+var cardimag  = '<img src="';
+var chekmark  = '<img src="chekmark.png">';
+var carddelt  = ""; 
+var cardgood  = 0;
+var cardvalu  = 0;
+var cardsuit  = "";
+var bet       = 0;
+var pot       = 0;
+var playstk   = 2000;
+var dealstk   = 2000;
+var betix     = 0;
+var handvalu  = 0;
+var playvalu  = 0;
+var playhand  = 0;
+var dealvalu  = 0;
+var dealhand  = 0;
+var sortswth  = 0;
+var stflswth  = 0;
+var tempcard  = 0;
+var tempcar2  = "";
+var tempsuit  = "";
+var tempused  = 0;
+var lastused  = 0;
+var dealtook  = 0;
+var dealswth  = 0;
+var playswth  = 0;
+var r1        = 0;
+var r2        = 0;
+var n         = 0;
+var playtiec  = 0;
+var dealtiec  = 0;
+
+//***
+//*** End Of General Use Scalar Variable Definition
+//***
+
+//***
+//*** Start of Card Deck Table Value Assignment
+//***
+
+for (i1=1;i1<5;i1++)
+    {
+    for (i2=1;i2<14;i2++)
+        {
+        switch(i1)
+           { 
+           case 1: cardsuit = "C"; break;
+           case 2: cardsuit = "D"; break;
+	       case 3: cardsuit = "H"; break;
+           case 4: cardsuit = "S"; break;
+           }
+        if (i2 == 1)
+           { 
+		   cardvalu = 14;
+           }
+	     else   
+    	   {
+           cardvalu = i2;
+           }
+        cardtabl[i1][i2][1] = (cardvalu);
+	    cardtabl[i1][i2][2] = (cardsuit);
+	    cardtabl[i1][i2][3] = ("");
+		}
+    }
+
+//***
+//*** End of Card Deck Array Value Assignment
+//***
+
+//***
+//*** Start of Hand Legend Array Definition
+//***
+
+handtabl[1][1] = 100;
+handtabl[1][2] = 199;
+
+handtabl[2][1] = 200;
+handtabl[2][2] = 299;
+
+handtabl[3][1] = 300;
+handtabl[3][2] = 399;
+
+handtabl[4][1] = 400;
+handtabl[4][2] = 499;
+
+handtabl[5][1] = 500;
+handtabl[5][2] = 599;
+
+handtabl[6][1] = 600;
+handtabl[6][2] = 699;
+
+handtabl[7][1] = 700;
+handtabl[7][2] = 799;
+
+handtabl[8][1] = 800;
+handtabl[8][2] = 899;
+
+//***
+//*** End of Hand Legend Array Definition
+//***
+
+//***
+//*** Start of New Game - Initialization
+//***
+
+for (i=1;i<6;i++)
+    {
+    document.getElementById("Tbdcard" + i).innerHTML = cardimag + cardback; 
+	document.getElementById("Tbpcard" + i).innerHTML = cardimag + cardback;
+    }
+
+document.Betform.Betchoice.disabled=true;
+document.getElementById("Act").innerHTML="Click The 'Start' Button To Start A New Game";
+document.getElementById("Butt").innerHTML='<button onclick="Newhand()">Start</button>';
+document.getElementById("P1").innerHTML = '<img src="P1.jpg">';
+
+//***
+//*** Start of Main Logic Path
+//***
+
+//*** New Hand - Deal Both Dealer And Player First Five Cards (Calls "Deal1card") ***
+
+function Newhand()
+    {
+	bet      = 5;
+	document.getElementById("Betchoice").selectedIndex = "1";
+	pot      = 10;
+	playstk  = playstk - bet;
+	dealstk  = dealstk - bet;
+	dealvalu = 0;
+	playvalu = 0;
+	dealswth = 0;
+	
+    for (i=1;i<6;i++)
+	    {
+	    cardused[i] = 0;
+	    }
+	document.getElementById("Betdisp").innerHTML  = "<font size='5' class='fnt'>" + bet     + "</font>"; 
+	document.getElementById("Potdisp").innerHTML  = "<font size='5' class='fnt'>" + pot     + "</font>";  
+	document.getElementById("Pstkdisp").innerHTML = "<font size='5' class='fnt'>" + playstk + "</font>"; 
+	document.getElementById("Dstkdisp").innerHTML = "<font size='5' class='fnt'>" + dealstk + "</font>";  
+    document.getElementById("Playhas0").innerHTML = "";
+	document.getElementById("Dealhas0").innerHTML = "";
+	document.getElementById("Whowon0").innerHTML = "";
+
+    //*** Reset The Card Used Flag - Starting Each Hand With A Newly Shuffled Deck ***
+
+    for (i1=1;i1<5;i1++)
+        { 	
+        for (i2=1;i2<14;i2++)
+            {
+		    cardtabl[i1][i2][3] = ("");
+	        }	
+        }
+
+    for (i=1;i<9;i++)	
+        { 
+        document.getElementById("Playhas" + i).innerHTML = "";
+        document.getElementById("Dealhas" + i).innerHTML = "";
+        document.getElementById("Whowon"  + i).innerHTML = "";
+        }
+
+    //*** Deal The First Five Cards ***
+
+    for (i=1;i<6;i++)	
+        {
+        Deal1card();
+        dealcard[i]    = carddelt;
+        dealcar2[i][1] = carddel2[1];
+        dealcar2[i][2] = carddel2[2];
+        document.getElementById("Tbdcard" + i).innerHTML =  cardimag + cardback; 
+        Deal1card();  
+        playcard[i]   = carddelt;
+		cardtemp[i]   = carddel2[1];
+		cardsui2[i]   = carddel2[2]; 
+        drawcard[i] = 0;
+        }
+        
+	
+    //*** Sort The players Card Images ***
+
+    playswth = 1;
+	
+    do
+     { 
+     sortswth = 1; 
+     Sortsub1();
+     }
+     while (sortswth == 0);
+
+    for (i=1;i<6;i++)	
+        { 
+        playcar2[i][1] = cardtemp[i];
+        playcar2[i][2] = cardsui2[i];
+        }	
+
+    //*** Player Selects An Opening bet Amount And Cards To Discard *** 
+    document.getElementById("P1").innerHTML = ''; 
+    document.Betform.Betchoice.disabled=false;
+	document.getElementById("Act").innerHTML="Select Opening Bet, Click On Cards To Discard, Then Click The 'Draw Button' To Draw Replacement Cards";
+    document.getElementById("Butt").innerHTML="<button onclick='Playdraw()'>Draw Button</button>";
+	
+    } //*** End function Newhand	
+
+//*** Deal Player Replacements For Discards (Event Driven By "Draw Button") ***  
+
+function Playdraw()
+    {
+	Betplace();
+	document.Betform.Betchoice.disabled=true;
+    for (i=1;i<6;i++)	
+        { 
+        Deal1card()
+        if (drawcard[i] == 1)
+           {		
+           playcard[i]    = carddelt;
+	       playcar2[i][1] = carddel2[1];
+	       playcar2[i][2] = carddel2[2];
+	       document.getElementById("Tbpcard" + i).innerHTML = playcard[i]; 
+           }
+         }
+	Endhand();
+	
+    } //*** End Function Playdraw
+
+
+//*** Determine the players final hand Score ***
+
+function Endhand()
+    {
+	
+    for (i=1;i<6;i++)	
+        { 
+        handcrds[i][1] = playcar2[i][1];
+        handcrds[i][2] = playcar2[i][2];
+        }
+	
+	handvalu = 0;
+	
+    Scorhand();
+	
+	playvalu = handvalu;
+	playswth = 0;
+	
+    //*** Set Final Player Status For Tie Break Tests *** 	
+
+    for (i=1;i<6;i++)	
+        { 
+	    playused[i]    = cardused[i];
+        playcar2[i][1] = cardtemp[i];
+        playcar2[i][2] = cardsui2[i];	
+	    }
+		
+    //*** Mark The Hand Legend To Denote The Players Hand ***  
+	
+    if (playvalu < 100)
+       {   
+       document.getElementById("Playhas0").innerHTML = chekmark;
+       playhand = 0;
+       } 	   
+     else
+       {
+       for (i=1;i<9;i++)	
+           { 
+           if (playvalu >= handtabl[i][1] &&
+               playvalu <= handtabl[i][2]) 
+              {
+	          document.getElementById("Playhas" + i).innerHTML = chekmark;
+			  playhand = i;
+              } 
+           }
+        } 
+	
+    //*** Determine The Dealers First Hand Score ***
+
+    for (i=1;i<6;i++)	
+        { 
+        handcrds[i][1] = dealcar2[i][1];
+        handcrds[i][2] = dealcar2[i][2];
+        }
+	
+	handvalu = 0;
+	
+	dealswth = 1;
+
+    Scorhand();
+	
+	dealvalu = handvalu;
+	
+    //*** Set The Dealers Hand Legend Index Value (dealhand) ***  
+	
+	if (dealvalu < 100)
+       { 
+       dealhand = 0;
+       }	   
+     else
+       {
+       for (i=1;i<9;i++)	
+           { 
+           if (dealvalu >= handtabl[i][1] &&
+               dealvalu <= handtabl[i][2]) 
+              {
+			  dealhand = i;
+              }
+           }  
+       }
+
+	Dealdraw();
+	
+    } //*** End function Endhand	
+
+
+function Dealdraw()
+    {
+    /*************************************************************************************************	
+	*** Hand value 0 means dealer has nothing, just high card. It needs the following logic:
+    ***  . 4 of a suit or 4 sequential, take 1, go for the flush or straight	
+	***  . Dont have 3 of a suit, keep 2 highest cards
+	***  . Have 3 of a suit - if all 3 under 10, and both other 2 over 10, keep high 2 -
+	***    else keep the 3 same suit
+    **************************************************************************************************/ 	
+
+	//*** Hand Index Value 0 Is Lowest Hand, High Card, So Dealer Needs To Decide What Cards To Keep *** 
+	
+    if (dealhand == 0)
+       {   	
+	   Dealkeep();
+	   }
+	
+	//*** Dealer Draws Discard Replacements ***
+	
+	if (dealhand < 4)
+	   {
+	   dealtook = 0;
+       for (i=1;i<6;i++)	
+           { 	   
+           Deal1card();
+           if (cardused[i] == 0)
+              { 		   
+              dealcard[i] = carddelt;
+		      dealtook    = dealtook + 1;
+	          cardtemp[i] = carddel2[1];
+	          cardsui2[i] = carddel2[2];
+	          }   
+           }
+	   }
+	
+	//*** Hand Values 4 To 8 , No Need To Draw Any Cards ***
+		
+    for (i=1;i<6;i++)	
+        { 
+        handcrds[i][1] = cardtemp[i];
+        handcrds[i][2] = cardsui2[i];
+        }
+
+    //*** Determine The Dealers Final Hand Score ***
+	
+	dealswth = 1;
+	
+    Scorhand();
+	
+	dealvalu = handvalu;
+
+    //*** Set Final Dealer Status For Tie Break Tests *** 	
+	
+    for (i=1;i<6;i++)	
+        { 
+	    dealused[i]    = cardused[i];
+        dealcar2[i][1] = cardtemp[i];
+        dealcar2[i][2] = cardsui2[i];	
+        }
+
+    //*** Set The Dealers Hand Legend Index Value (dealhand) ***  
+	
+	if (dealvalu < 100)
+       { 
+       dealhand = 0;
+       }	   
+     else
+       for (i=1;i<9;i++)	
+           { 
+           if (dealvalu >= handtabl[i][1] &&
+               dealvalu <= handtabl[i][2]) 
+              {
+			  dealhand = i;
+              }
+           }
+	document.Betform.Betchoice.disabled=false;
+	document.getElementById("Act").innerHTML="Dealer Took " + dealtook + " Cards. Select A Final Bet Amount, Then Click On The 'Place Bet' Button";
+	document.getElementById("Butt").innerHTML="<button onclick='Betfinal()'>Place Bet</button";
+	
+    } //*** End Function Dealdraw
+
+//*** Player Selects A Final Bet Amount *** 
+
+function Betfinal()
+    {
+    Betplace();
+	document.Betform.Betchoice.disabled=true;
+	Whowins();
+
+    } //*** End Function Betfinal
+
+
+//*** Determine The Winner ***
+
+function Whowins()
+    { 
+    //*** Mark The Hand Legend To Denote The Dealers Hand ***  
+
+    delay = 0;
+	document.getElementById("Dealhas" + dealhand).innerHTML = chekmark;
+
+    for (i=1;i<6;i++)	
+        { 
+        document.getElementById("Tbdcard" + i).innerHTML = dealcard[i];
+        }
+
+    if (playvalu == dealvalu)
+       {
+	   Tiebreak();
+       } 
+	
+	if (playvalu > dealvalu)
+       {
+	   playstk = playstk + pot;
+	   document.getElementById("Pstkdisp").innerHTML = "<font size='5' class='fnt'>" + playstk + "</font>"; 
+       document.getElementById("Whowon" + playhand).innerHTML = "Player";
+       }
+	 else
+       {
+       dealstk = dealstk + pot;
+	   document.getElementById("Dstkdisp").innerHTML = "<font size='5' class='fnt'>" + dealstk + "</font>";  
+	   document.getElementById("Whowon" + dealhand).innerHTML = "Dealer";
+	   }
+
+    document.getElementById("Act").innerHTML="Click The 'Start' Button To Start A New Hand";
+	document.getElementById("P1").innerHTML = '<img src="P1.jpg">';
+    document.getElementById("Butt").innerHTML="<button onclick='Newhand()'>Start</button>";
+	
+    } //*** End Function Whowins	
+
+
+//***
+//*** End Of Main Logic Path
+//***
+
+//***
+//*** Start Of Stand Alone Sub Routines
+//***
+
+//*** Determine The Score Value Of Any Five Card Hand ***       
+
+function Scorhand()
+    { 
+    for (i=1;i<6;i++)	
+        { 
+        cardtemp[i] = handcrds[i][1];
+        cardsui2[i] = handcrds[i][2];	
+		cardused[i] = 0;
+        }
+
+    do 
+     {
+     sortswth = 1; 
+     Sortsub1();
+     } 
+     while (sortswth == 0);
+
+    //*** Logic To Determine Hand Value ***
+
+    //*** 1 Pair ***
+	
+	/* Going backwards through array to insure that if hand is 2 pair
+	   highest pair is found first */
+
+      for (i=5;i>0;i--)	
+        { 
+        if (cardtemp[i] == cardtemp[i - 1])
+           { 
+           handvalu        = handtabl[1][1];
+           cardused[i]     = 1;
+           cardused[i - 1] = 1;
+           lastused        = i - 1;  
+           break;
+           }
+      	}   
+
+    //*** 2 Pair ***
+	
+    /* For 2 Pair only the high Pair will be marked as 1  
+       for primary scoring, the remaining pair as 2 for
+       secondary scoring. This will prevent a sum of 4 low 
+	   ranking cards from beating a hand with a lower sum,
+	   but a higher ranking high Pair. */
+
+    if (handvalu == 100)
+       { 
+       for (i=1;i<lastused;i++)	
+           { 
+           if (cardtemp[i] == cardtemp[i + 1] &&
+		       cardused[i + 1] == 0)
+		      {
+              handvalu        = handtabl[2][1];
+              cardused[i]     = 2;
+              cardused[i + 1] = 2;
+              break;
+              }
+           }  
+       }       
+
+    //*** 3 Of A Kind ***
+
+    if (handvalu == 100) 
+       { 
+       for (i=1;i<lastused;i++)	
+           { 
+           if (cardtemp[i] == cardtemp[i + 1])
+              {
+              handvalu        = handtabl[3][1];
+              cardused[i]     = 1;
+              cardused[i + 1] = 1;
+              break;
+	          }
+           }	
+       } 
+
+    //*** Straight ***
+	
+    //*** Change Ace From 14 To 1 If It Will Complete A Straight ***
+	
+    if (cardtemp[1] == 2 &&  
+        cardtemp[2] == 3 &&   
+        cardtemp[3] == 4 &&   
+        cardtemp[4] == 5 &&   
+        cardtemp[5] == 14) 
+       {
+       cardtemp[1] = 1; 
+       cardtemp[2] = 2;
+       cardtemp[3] = 3; 
+       cardtemp[4] = 4; 
+       cardtemp[5] = 5; 
+       }
+
+    if (cardtemp[2] - cardtemp[1] == 1 &&   
+        cardtemp[3] - cardtemp[2] == 1 &&   
+        cardtemp[4] - cardtemp[3] == 1 &&   
+        cardtemp[5] - cardtemp[4] == 1)
+       {      
+       handvalu = handtabl[4][1];
+       for (i=1;i<6;i++)	
+           {
+           cardused[i] = 1;
+           }
+       }
+
+    //*** Flush ***
+
+    /* For a flush only the high card will be marked as 1  
+       for primary scoring. This will prevent a sum of 5 low 
+	   ranking cards from beating a hand with a lower sum,
+	   but a higher ranking high card. */
+
+    if (cardsui2[1] == cardsui2[2]  &&   
+        cardsui2[2] == cardsui2[3]  &&   
+        cardsui2[3] == cardsui2[4]  &&   
+        cardsui2[4] == cardsui2[5])     
+       {
+       if (handvalu == 400)
+          { 
+          stflswth  = 1;
+          }
+       handvalu = handtabl[5][1];
+       for (i=1;i<6;i++)	
+           {
+           cardused[i] = 0;
+           }
+       cardused[5] = 1;
+	   }
+
+    //*** Full House ***
+
+    // For a full house hand only the 3 of a kind (trips) cards will
+    // be marked as  1 for primary scoring, as no 2 players can have the 
+    // same ranking trips. 
+
+    if  (cardtemp[1] == cardtemp[2]   &&   
+         cardtemp[1] == cardtemp[3]   &&   
+         cardtemp[4] == cardtemp[5])  
+        {
+        handvalu    = handtabl[6][1];
+        cardused[1] = 1;
+        cardused[2] = 1;
+        cardused[3] = 1;
+        }   
+
+    if  (cardtemp[1] == cardtemp[2]   &&   
+         cardtemp[3] == cardtemp[4]   &&   
+         cardtemp[3] == cardtemp[5])  
+        {
+        handvalu    = handtabl[6][1];
+        cardused[3] = 1;
+        cardused[4] = 1;
+        cardused[5] = 1;
+        }   
+
+    //*** Four Of A Kind ***
+
+    if (cardtemp[1] == cardtemp[2]  &&
+        cardtemp[2] == cardtemp[3]  &&
+        cardtemp[3] == cardtemp[4]) 
+       {		
+       handvalu = handtabl[7][1];
+       for (i=1;i<5;i++)	
+           {
+           cardused[i] = 1;
+           }	
+        }
+
+    if (cardtemp[2] == cardtemp[3]  &&
+        cardtemp[3] == cardtemp[4]  &&
+        cardtemp[4] == cardtemp[5]) 
+       {		
+       handvalu = handtabl[7][1];
+       for (i=2;i<6;i++)	
+           {
+           cardused[i] = 1;
+           }	
+        }
+
+    //*** Straight Flush ***
+
+    if (stflswth == 1)
+	   { 
+       handvalu = handtabl[8][1];
+       stflswth = 0;
+       for (i=1;i<6;i++)	
+           {
+           cardused[i] = 1;
+           }
+       }	
+	   
+    //*** High Card ***
+	
+	if (handvalu == 0)
+	   { 
+	   cardused[5] = 1;
+       }	
+	
+    //*** Sum used cards ***	   
+	   
+	for (i=1;i<6;i++)	
+        {
+        if (cardused[i] == 1)
+	       { 
+	       handvalu = handvalu + cardtemp[i];
+		   }
+		}  
+	
+    } //*** End Function Scorhand	
+
+
+//*** Deal One Card And Mark It As Used ***
+
+function Deal1card()
+    {
+    cardgood = 0;
+    do 
+	 {
+     r1 = Math.floor(Math.random() * 04) + 1;
+     r2 = Math.floor(Math.random() * 13) + 1;
+	 if (cardtabl[r1][r2][3] == "")
+	    { 
+	    carddelt = cardimag + cardtabl[r1][r2][1] + cardtabl[r1][r2][2] + '.png">';   
+	    carddel2[1] = cardtabl[r1][r2][1];
+	    carddel2[2] = cardtabl[r1][r2][2];
+	    cardtabl[r1][r2][3] = "*";
+	    cardgood = 1;
+        }
+	 }
+	 while (cardgood == 0);
+
+    } //*** End Function Deal1card
+
+
+//*** player Selects Discards (Event Driven By "Onclick" Object) ***
+
+function Tbpclick(n)
+    { 
+    if (drawcard[n] == 0)
+       {
+	   drawcard[n] = 1;
+	   document.getElementById("Tbpcard" + n).innerHTML = cardimag + cardback;
+       }
+     else
+	   if (drawcard[n] == 1)
+          { 
+          drawcard[n] = 0;
+	      document.getElementById("Tbpcard" + n).innerHTML = playcard[n]; 
+	      }
+
+    } //*** End Function TBpclick()	
+
+
+//*** Perform Bet Calcs And Display ***
+
+function Betplace()
+    {
+    betix     = Betform.Betchoice.selectedIndex
+	bet       = betamt[betix];
+	pot       = pot + (bet * 2);
+	playstk   = playstk - bet;
+	dealstk   = dealstk - bet;
+	document.getElementById("Betdisp").innerHTML  = "<font size='5' class='fnt'>" + bet     + "</font>"; 
+	document.getElementById("Potdisp").innerHTML  = "<font size='5' class='fnt'>" + pot     + "</font>";  
+	document.getElementById("Pstkdisp").innerHTML = "<font size='5' class='fnt'>" + playstk + "</font>"; 
+	document.getElementById("Dstkdisp").innerHTML = "<font size='5' class='fnt'>" + dealstk + "</font>";  
+	
+    } //*** End Function Betplace
+
+
+/*** The Dealer Has Only A High Card Hand, So Must Decide What Cards To Keep. ***
+ *** The hand will be tested for possibilities in this order:                 ***
+     . Flush (keep four of same suit).
+     . Straight (keep four sequential numerics. No need to test for Ace hi/lo, will only try if open ended). 
+     . if there are 3 of any given suit, and the numeric value of any 2 of those is greater than 10,
+       keep the 3 and go for the flush.
+     . Keep the 2 highest cards. */      
+
+function Dealkeep()
+    {
+    //*** Check For Possible Flush ***
+
+	do 
+     {
+     sortswth = 1; 
+     Sortsub2();
+     }
+     while (sortswth == 0);
+
+    if (cardsui2[1] == cardsui2[2] &&
+        cardsui2[2] == cardsui2[3] &&
+        cardsui2[3] == cardsui2[4]) 
+       {
+	   cardused[5] = 0;
+       for (i=1;i<5;i++)	
+           {
+           cardused[i] = 1;
+           }	
+	   do
+        { 
+        sortswth = 1; 
+        Sortsub1();
+        }
+        while (sortswth == 0);
+	   return;
+       }
+	
+    if (cardsui2[2] == cardsui2[3] &&
+        cardsui2[3] == cardsui2[4] &&
+        cardsui2[4] == cardsui2[5])
+       {  
+	   cardused[1] == 0;
+       for (i=2;i<6;i++)	
+           {
+           cardused[i] = 1;
+           }
+	   do
+        { 
+        sortswth = 1; 
+        Sortsub1();
+        }
+        while (sortswth == 0);
+       return;	   
+       }
+		
+	do 
+     { 
+     sortswth = 1; 
+     Sortsub1();
+     } 
+     while (sortswth == 0);
+
+    //*** Check For Possible Straight ***
+
+    if (cardtemp[2] - cardtemp[1]  == 1 &&
+        cardtemp[3] - cardtemp[2]  == 1 &&
+        cardtemp[4] - cardtemp[3]  == 1) 
+       {
+       cardused[5] = 0;
+       for (i=1;i<5;i++)	
+           {
+		   cardused[i] = 1;
+		   }
+	   return;	
+       }
+
+    if (cardtemp[3] - cardtemp[2]  == 1 &&
+        cardtemp[4] - cardtemp[3]  == 1 &&
+        cardtemp[5] - cardtemp[4]  == 1 &&
+        cardtemp[5] < 14) //*** (If High Card Is An Ace, Possibility Is Not Open Ended) ***	   
+       {
+       cardused[1] = 0;
+       for (i=1;i<5;i++)	
+           {
+		   cardused[i] = 1;
+           }
+	   return;	
+       }
+	
+    //*** Sort Hand By Card Suit Value ***
+	
+	do
+     { 
+     sortswth = 1; 
+     Sortsub2();
+     }
+     while (sortswth == 0);
+
+    //*** The Next 3 if Statements Are The 3 Of A Suit Test ***
+
+    if ((cardsui2[1] == cardsui2[2]  &&
+	     cardsui2[1] == cardsui2[3]) &&
+	    (cardtemp[1] > 9 && cardtemp[2] > 9 ||
+	     cardtemp[2] > 9 && cardtemp[3] > 9 ||
+	     cardtemp[1] > 9 && cardtemp[3] > 9))
+       { 
+	   cardused[1] = 1;
+       cardused[2] = 1;
+       cardused[3] = 1;
+       cardused[4] = 0;
+       cardused[5] = 0;
+	   do 
+        {
+        sortswth = 1; 
+        Sortsub1();
+        }
+        while (sortswth == 0);
+       return;
+	   } 
+	
+    if ((cardsui2[2] == cardsui2[3] &&
+	     cardsui2[2] == cardsui2[4]) &&
+	    (cardtemp[2] > 9 && cardtemp[3] > 9 ||
+	     cardtemp[3] > 9 && cardtemp[4] > 9 ||
+	     cardtemp[2] > 9 && cardtemp[4] > 9))
+       {  
+	   cardused[1] = 0;
+       cardused[2] = 1;
+       cardused[3] = 1;
+       cardused[4] = 1;
+       cardused[5] = 0;
+	   do 
+        {
+        sortswth = 1; 
+        Sortsub1();
+        }
+        while (sortswth == 0);
+       return;
+	   }
+			
+    if ((cardsui2[3] == cardsui2[4] &&
+	     cardsui2[3] == cardsui2[5]) &&
+	    (cardtemp[3] > 9 && cardtemp[4] > 9 ||
+		 cardtemp[4] > 9 && cardtemp[5] > 9 ||
+	     cardtemp[3] > 9 && cardtemp[5] > 9))
+       {
+	   cardused[1] = 0;
+       cardused[2] = 0;
+       cardused[3] = 1;
+       cardused[4] = 1;
+       cardused[5] = 1;
+	   do
+        {
+        sortswth = 1; 
+        Sortsub1();
+        }
+        while (sortswth == 0);
+       return;
+	   }
+	
+	do 
+     {
+     sortswth = 1; 
+     Sortsub1();
+     }
+     while (sortswth == 0);
+	
+//*** The Dealers Last Option Now Is To Keep The 2 High Cards ***
+
+    cardused[1] = 0;
+    cardused[2] = 0;
+    cardused[3] = 0;
+    cardused[4] = 1;
+    cardused[5] = 1;
+	
+    } //*** End Function Dealkeep
+	   
+	   
+//*** Tie Breaker ***
+
+//*** There are 2 types of logic based on the 3 types of values that  ***       
+//*** may be stored in the cardused flags, which are; 0 = not used,   ***
+//*** 1 = used and included in the hands scoring value, 2 = used but  ***
+//*** not included in the scoring value. Only type 1 flags have been  ***
+//*** processed up to this point. Types 2 and 0 will be processed in  ***
+//*** Tiebreak logic below, in that order. If then there is still a   ***
+//*** tie, the win will be awarded to the Dealer.                     ***
+
+function Tiebreak()
+    {
+
+	//*** Type 2 Logic ***
+	   
+    if (dealhand == 2) 
+       {
+       for (i=5;i>0;i--)	
+           {
+	       if (playused[i] == 2)
+		      {
+		      playtiec = playcar2[i][1];
+			  break;
+			  }
+		   }
+	   for (i=5;i>0;i--)	
+           {
+	       if (dealused[i] == 2)
+		      {
+		      dealtiec = dealcar2[i][1];
+			  break;
+			  }
+		   }
+       if (playtiec > dealtiec)
+	      {
+		  playvalu = playvalu + 1;
+		  return;
+		  }
+        else
+		  if (playtiec < dealtiec)
+		      {
+		      playvalu = playvalu - 1;
+			  return;
+			  }
+       } 	   
+  
+    if (dealhand != 0 &&
+	    dealhand != 1 &&
+		dealhand != 2 &&
+		dealhand != 5)
+        return;
+	   
+	//*** Type 0 Logic ***   
+	   
+    for (i=5;i>0;i--)	
+        { 
+        if (playcar2[i][1] > dealcar2[i][1])
+           {	   
+	       playvalu = playvalu + 1;
+		   break;
+	       }
+        }
+		
+    } //*** End function Tiebreak
+
+
+//*** Sort A 5 Card Hand By Numeric Value ***
+
+function Sortsub1()
+    {
+    for (i=1;i<6;i++)	
+        {
+        if (cardtemp[i + 1] < cardtemp[i])
+           {
+           sortswth        = 0;
+           tempcard        = cardtemp[i];
+           cardtemp[i]     = cardtemp[i + 1];
+           cardtemp[i + 1] = tempcard;
+	       tempsuit        = cardsui2[i];
+           cardsui2[i]     = cardsui2[i + 1];
+           cardsui2[i + 1] = tempsuit;
+	       tempused        = cardused[i];
+           cardused[i]     = cardused[i + 1];
+           cardused[i + 1] = tempused;
+		   if (dealswth == 1)
+              {
+		      tempcar2    = dealcard[i];
+              dealcard[i] = dealcard[i + 1];
+              dealcard[i + 1] = tempcar2;
+              } 
+		   if (playswth == 1)
+              {
+		      tempcar2    = playcard[i];
+              playcard[i] = playcard[i + 1];
+              playcard[i + 1] = tempcar2;
+              } 
+           }
+        }
+
+	if (playswth == 1) 
+       {
+	   for (i=1;i<6;i++)
+           {
+		   document.getElementById("Tbpcard" + i).innerHTML = playcard[i];
+           }
+	    } 
+	
+    } //*** End Function Sortsub1
+
+
+//*** Sort A 5 Card Hand By Suit Value ***
+
+function Sortsub2()
+    { 
+    for (i=1;i<6;i++)
+        {
+        if (cardsui2[i + 1] < cardsui2[i])
+           {
+           sortswth        = 0;
+           tempcard        = cardtemp[i];
+           cardtemp[i]     = cardtemp[i + 1];
+           cardtemp[i + 1] = tempcard;
+	       tempsuit        = cardsui2[i];
+           cardsui2[i]     = cardsui2[i + 1];
+           cardsui2[i + 1] = tempsuit;
+		   tempused        = cardused[i];
+           cardused[i]     = cardused[i + 1];
+           cardused[i + 1] = tempused;
+		   if (dealswth == 1)
+              { 
+		      tempcar2    = dealcard[i];
+              dealcard[i] = dealcard[i + 1];
+              dealcard[i + 1] = tempcar2;
+              } 
+           }
+        }
+	
+    } //*** End Function Sortsub2
+	
+//*** Timed Delay ***
+	
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+} //*** End Timed Delay
+
+
+//***
+//*** End Of Stand Alone Sub Routines
+//***
+
+</script>
+
+<!--
+//***
+//*** End Of Five Card Draw POKER GAME Script 
+//***
+-->
+
+<!--
+//***
+//*** End Of Five Card Draw POKER GAME Document.  
+//***
+-->
+
+</body>
+</html>
+
